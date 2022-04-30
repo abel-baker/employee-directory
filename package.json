@@ -1,0 +1,31 @@
+{
+  "name": "employee-directory",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "test": "jest"
+  },
+  "jest": {
+    "verbose": true
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/abel-baker/employee-directory.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/abel-baker/employee-directory/issues"
+  },
+  "homepage": "https://github.com/abel-baker/employee-directory#readme",
+  "dependencies": {
+    "inquirer": "^8.2.4",
+    "jest": "^28.0.3",
+    "uniqid": "^5.4.0"
+  }
+}
