@@ -7,37 +7,12 @@ const Intern = require('./lib/Intern');
 
 const roster = [];
 
-// const roleQuestions = [
-//   {
-//     name: 'addEmployee',
-//     type: 'confirm',
-//     message: 'Add an employee?',
-//     default: true
-//   },
-//   {
-//     when: (answers) => answers.addEmployee,
-//     name: 'employeeRole',
-//     type: 'list',
-//     message: 'Employee type:',
-//     choices: ['Add engineer', 'Add intern', 'Cancel and finish roster']
-//   }
-// ];
-
 const confirmContinueQuestions = [
   {
     name: 'continue',
     type: 'confirm',
     message: 'Add additional employee?',
     default: true
-  }
-];
-const roleQuestions = [
-  {
-    when: (answers) => answers.addEmployee,
-    name: 'employeeRole',
-    type: 'list',
-    message: 'Employee role:',
-    choices: ['Add engineer', 'Add intern', 'Cancel and finish roster']    
   }
 ];
 
@@ -47,8 +22,8 @@ const employeeQuestions = [
     type: 'list',
     message: 'Employee role:',
     choices: [
-      { name: 'Add engineer', value: 'engineer' },
-      { name: 'Add intern', value: 'intern' }]
+      { name: 'Add engineer', value: 'engineer', short: 'Engineer' },
+      { name: 'Add intern', value: 'intern', short: 'Intern' }]
   },
   {
     name: 'name',
@@ -89,16 +64,28 @@ async function promptManager() {
 }
 
 async function promptEmployee(questions, answers) {
+  if (!answers.role || answers.role != 'manager') {
+    console.log();
+    console.log(`Enter Employee Information`);
+    console.log(`========`);
+  }
+
   const responses = await inquirer.prompt(questions, answers);
   let employee;
 
   switch (responses.role) {
     case 'intern':
-      employee = new Intern(responses); break;
+      employee = new Intern(responses);
+      console.log(`Created employee '${employee.name} [${employee.id}]' - ${employee.getRole()}, ${employee.school}`);
+      break;
     case 'engineer':
-      employee = new Engineer(responses); break;
+      employee = new Engineer(responses); 
+      console.log(`Created employee '${employee.name} [${employee.id}]' - ${employee.getRole()}, ${employee.github}`);
+      break;
     case 'manager':
-      employee = new Manager(responses); break;
+      employee = new Manager(responses); 
+      console.log(`Created employee '${employee.name} [${employee.id}]' - ${employee.getRole()}, office ${employee.office}`);
+      break;
     default:
       employee = new Employee(responses);
   }
@@ -112,37 +99,17 @@ async function run() {
   roster.push(manager);
   console.log(roster);
 
-  const employee = await promptEmployee(employeeQuestions, {});
-  
-  console.log(employee);
+  let repeat;
+  do {
+    const employee = await promptEmployee(employeeQuestions, {});
+    roster.push(employee);
+    console.log(roster);
 
-  // do {
-  //   console.log();
-  //   console.log(`Enter Employee Information`);
-  //   console.log(`========`);
+    repeat = await inquirer.prompt(confirmContinueQuestions);
+    console.log(repeat);
+  } while (repeat.continue);
 
-  //   const role = await inquirer.prompt(roleQuestions);
-  //   const employee = await promptEmployee();
-  //   console.log(employee);
-    
-  // } while (true);
-
+  console.log(`Roster complete with (${roster.length}) employees.`);
 }
 
 run();
-
-// .then(() => {
-//   promptEmployee()
-//   .then(promptEmployeeId)
-//   .then(employeeData => {
-//     console.log(employeeData);
-//   })
-// });
-
-
-
-
-// Begin with required Manager employee: name, employeeID, email address, office number
-// Add engineer or intern or finish team
-// Engineer: name, id, email, github username
-// Intern: name, id, email, school
