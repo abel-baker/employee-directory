@@ -1,5 +1,5 @@
+const fs = require('fs');
 const inquirer = require('inquirer');
-const uniqid = require('uniqid');
 const Employee = require('./lib/Employee');
 const Engineer = require('./lib/Engineer');
 const Manager = require('./lib/Manager');
@@ -110,6 +110,9 @@ async function run() {
   } while (repeat.continue);
 
   console.log(`Roster complete with (${roster.length}) employees.`);
+  fs.writeFile('./dist/roster.json', JSON.stringify(roster, null, 2), err => {
+    if (err) throw err;
+  });
 }
 
 run();
